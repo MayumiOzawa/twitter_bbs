@@ -34,15 +34,30 @@
 			$error['password'] = 'blank';
 		}
 
+		$fileName = $_FILES['image']['name'];
+		if (!empty($fileName)) {
+			$ext = substr($fileName, -3);
+			if ($ext != 'jpg' && $ext != 'gif' && $ext != 'png') {
+				$error['image'] = 'type';
+			}
+		}
+
 		//正常に入力されていたら
 		if (empty($error)) {
+			//画像をアップロードする
+			$image = date('YmdHis') . $_FILES['image']['name'];
+			move_uploaded_file($_FILES['image']['tmp_name'], '../member_picture/' . $image);
 			$_SESSION['join'] = $_POST;
+			$_SESSION['join']['image'] = $image;
 			//画面遷移
 			header('Location: check.php');
 			exit();
 		}
 	}
 
+	$_POST['name']="";
+	$_POST['email']="";
+	$_POST['password']="";
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -66,18 +81,27 @@
 	<dl>
 		<dt>ニックネーム<span class="required">必須</span></dt>
 		<dd>
-			<input type="text" name="name" size="35" maxlength="255" />
+			<input type="text" name="name" size="35" maxlength="255" value="<?php echo htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8'); ?>" />
 			<?php if (isset($error['name']) && ($error['name'] == 'blank')): ?> 
 			<p class ="error">* ニックネームを入力してください</p>
 		<?php endif; ?>
 		</dd>
 		<dt>メールアドレス<span class="required">必須</span></dt>
 		<dd>
-			<input type="text" name="email" size="35" maxlength="255" />
+			<input type="text" name="email" size="35" maxlength="255" value="<?php echo htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8'); ?>"/>
+			<?php if (isset($error['email']) && ($error['email'] == 'blank')): ?>
+			<p class="error">* メールアドレスを入力してください</p>
+		<?php endif; ?>
 		</dd>
 		<dt>パスワード<span class="required">必須</span></dt>
 		<dd>
-			<input type="password" name="password" size="10" maxlength="20" />
+			<input type="password" name="password" size="10" maxlength="20" value="<?php echo htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8'); ?>"/>
+			<?php if (isset($error['password']) && ($error['password'] == 'blank')): ?>
+			<p class="error">* パスワードを入力してください</p>
+			<?php endif; ?>
+			<?php if (isset($error['password']) && ($error['password'] == 'length')): ?>
+			<p class="error">* パスワードは4文字以上で入力してください</p>
+		<?php endif; ?>
 		</dd>
 		<dt>写真など</dt>
 		<dd>
