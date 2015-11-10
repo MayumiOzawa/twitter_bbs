@@ -1,20 +1,4 @@
-<?php
-	// $error = "";	
-	// if ($_SERVER['REQUEST_METHOD'] === 'POST')
-	// {
-	// 	$name = $_POST['name'];
-	// 	$email = $_POST['email'];
-	// 	$password = $_POST['password'];
-	// 	if ($name == "" || $email == "" || $password == "")
-	// 	{
-	// 		$error = "データが入力されていません。";
-	// 	}
-	// 	else
-	// 	{
-	// 		header('Location: check.html');
-	// 	}
-	// }
-
+	<?php
 	//セッション変数を使う時は必ず記述
 	session_start();
 
@@ -41,23 +25,32 @@
 				$error['image'] = 'type';
 			}
 		}
-
 		//正常に入力されていたら
 		if (empty($error)) {
 			//画像をアップロードする
 			$image = date('YmdHis') . $_FILES['image']['name'];
 			move_uploaded_file($_FILES['image']['tmp_name'], '../member_picture/' . $image);
+			//データをサーバに保存する
 			$_SESSION['join'] = $_POST;
 			$_SESSION['join']['image'] = $image;
-			//画面遷移
+			// //画面遷移
 			header('Location: check.php');
 			exit();
-		}
+		}	
 	}
 
-	$_POST['name']="";
-	$_POST['email']="";
-	$_POST['password']="";
+	//書き直し
+	if (!isset($_REQUEST['action'])) {
+			$_POST['name']="";
+			$_POST['email']="";
+			$_POST['password']="";		
+		}else{
+			if ($_REQUEST['action'] == 'rewrite') {
+			$_POST = $_SESSION['join'];
+			$error['rewrite'] = true;
+		}	
+	}
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
