@@ -2,6 +2,7 @@
 	session_start();
 	require('dbconnect.php');
 
+	//表示したいメッセージのidが判別できない場合、投稿画面に戻る
 	if (empty($_REQUEST['id'])) {
 		header('Location: index.php');
 		exit();
@@ -36,16 +37,17 @@
 		if ($post = mysqli_fetch_assoc($posts)):
 	?>
 			<div class="msg">
-			<img src="member_picture/<?php echo htmlspecialchars($post['picture'], ENT_QUOTES, 'UTF-8'); ?>" width="48" height="48" alt="<?php echo htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'); ?>" />
-			<p><?php echo htmlspecialchars($post['message'], ENT_QUOTES, 'UTF-8'); ?>
-			<span class="name">
-				（<?php echo htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'); ?>）
-			</span>
-			</p>
+				<!-- altは、画像が表示されなかった場合などに、代わりに出てくる文字列 -->
+				<img src="member_picture/<?php echo htmlspecialchars($post['picture'], ENT_QUOTES, 'UTF-8'); ?>" width="48" height="48" alt="<?php echo htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'); ?>" />
+				<p><?php echo htmlspecialchars($post['message'], ENT_QUOTES, 'UTF-8'); ?>
+				<span class="name">
+					（<?php echo htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'); ?>）
+				</span>
+				</p>
 
-			<p class="day">
-				<?php echo htmlspecialchars($post['created'], ENT_QUOTES, 'UTF-8'); ?>
-			</p>
+				<p class="day">
+					<?php echo htmlspecialchars($post['created'], ENT_QUOTES, 'UTF-8'); ?>
+				</p>
 			</div>
 	<?php
 		else:
